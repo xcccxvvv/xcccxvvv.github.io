@@ -108,20 +108,28 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="The Ethan&#39;s Blog">
-<meta property="og:url" content="http://www.kilenc.cc/index.html">
+  <meta name="description" content="公司测试环境和预发布环境使用k8s进行容器编排和集群管理已经有一段时间了，期间遇到的问题还挺多的。特在这里进行一下总结。 安全问题某天，AWS上一个由k8s管理的集群，突然变得不稳定。该集群是用来部署一些测试服务的，现在测试服务基本不能运行。 集群由1个Master和3个Node组成。检查发现基本上每个Node的CPU占用都100%。使用top命令查看，发现命名为gcc的进程占用了大量CPU。仔细">
+<meta name="keywords" content="实践总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实践总结(1) Kubernetes使用总结">
+<meta property="og:url" content="http://www.kilenc.cc/2018/11/01/study-note-20181101/index.html">
 <meta property="og:site_name" content="The Ethan&#39;s Blog">
+<meta property="og:description" content="公司测试环境和预发布环境使用k8s进行容器编排和集群管理已经有一段时间了，期间遇到的问题还挺多的。特在这里进行一下总结。 安全问题某天，AWS上一个由k8s管理的集群，突然变得不稳定。该集群是用来部署一些测试服务的，现在测试服务基本不能运行。 集群由1个Master和3个Node组成。检查发现基本上每个Node的CPU占用都100%。使用top命令查看，发现命名为gcc的进程占用了大量CPU。仔细">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/02/ihipCT.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/02/ih8wbq.png">
+<meta property="og:updated_time" content="2018-11-02T05:02:11.270Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="The Ethan&#39;s Blog">
+<meta name="twitter:title" content="实践总结(1) Kubernetes使用总结">
+<meta name="twitter:description" content="公司测试环境和预发布环境使用k8s进行容器编排和集群管理已经有一段时间了，期间遇到的问题还挺多的。特在这里进行一下总结。 安全问题某天，AWS上一个由k8s管理的集群，突然变得不稳定。该集群是用来部署一些测试服务的，现在测试服务基本不能运行。 集群由1个Master和3个Node组成。检查发现基本上每个Node的CPU占用都100%。使用top命令查看，发现命名为gcc的进程占用了大量CPU。仔细">
+<meta name="twitter:image" content="https://s1.ax1x.com/2018/11/02/ihipCT.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://www.kilenc.cc/">
+  <link rel="canonical" href="http://www.kilenc.cc/2018/11/01/study-note-20181101/">
 
 
 
@@ -131,7 +139,7 @@
   };
 </script>
 
-  <title>The Ethan's Blog</title>
+  <title>实践总结(1) Kubernetes使用总结 | The Ethan's Blog</title>
   
 
 
@@ -180,8 +188,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -222,7 +229,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
     <a href="/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
   </li>
@@ -266,9 +273,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -300,11 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/01/study-note-20181101/" itemprop="url">
-                  实践总结(1) Kubernetes使用总结
-                </a>
+          <h1 class="post-title" itemprop="name headline">实践总结(1) Kubernetes使用总结
               
             
           </h1>
@@ -379,9 +382,7 @@
       
 
       
-        
-          
-            <p>公司测试环境和预发布环境使用k8s进行容器编排和集群管理已经有一段时间了，期间遇到的问题还挺多的。特在这里进行一下总结。</p>
+        <p>公司测试环境和预发布环境使用k8s进行容器编排和集群管理已经有一段时间了，期间遇到的问题还挺多的。特在这里进行一下总结。</p>
 <h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1><p>某天，AWS上一个由k8s管理的集群，突然变得不稳定。该集群是用来部署一些测试服务的，现在测试服务基本不能运行。</p>
 <p>集群由1个Master和3个Node组成。检查发现基本上每个Node的CPU占用都100%。使用<code>top</code>命令查看，发现命名为<strong>gcc</strong>的进程占用了大量CPU。<br>仔细分析后发现，该进程是一个挖矿程序，指向了一个门罗币矿池，所挖的矿都转到了一个钱包地址。查了这个钱包地址的状态，发现这个地址有大量Hash Rate而且转入转出到额度都挺惊人，看来有很多服务器都被埋下了这个挖矿程序。</p>
 <p>杀死该进程，并做了清理工作，服务都恢复了正常。那么问题来了，挖矿程序是怎样植入k8s Node的呢？公司能登录管理这批服务器的人就只有两个，而且相应的安全措施都有。除了这个k8s集群，其他服务器上并没有发现挖坑的程序。问题应该跟k8s有关，查看了这三个Node开放出去的端口，发现10250这个端口被映射到公网。这个端口属于<a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/" target="_blank" rel="noopener">kubelet</a>,kubelet作为node agent运行在每个Node上，负责管理和监控Node上容器的创建。kubelet会运行一个HTTP服务，提供REST API来管理和控制Node。于是检查kubelet日志，发现了有一条比较奇怪的日志，该日志显示用curl下载并执行了一个脚本。而该脚本的用途就是下载挖矿程序和配置文件并启动挖矿。Google了一下，kubelet 10250的发现一篇文章刚好讲的就是这个<a href="https://medium.com/handy-tech/analysis-of-a-kubernetes-hack-backdooring-through-kubelet-823be5c3d67c" target="_blank" rel="noopener">Analysis of a Kubernetes hack — Backdooring through kubelet</a>。</p>
@@ -395,8 +396,6 @@
 <p><img src="https://s1.ax1x.com/2018/11/02/ih8wbq.png" alt="ih8wbq.png"></p>
 <p>利用这一点，可以有很多操作的空间，具体我就不再叙述。</p>
 
-          
-        
       
     </div>
 
@@ -414,330 +413,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.kilenc.cc/2018/10/31/daily-note-20181031/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The Ethan's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/31/daily-note-20181031/" itemprop="url">
-                  日常吹水(1) 十月最后的一天
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-31 10:15:39" itemprop="dateCreated datePublished" datetime="2018-10-31T10:15:39+08:00">2018-10-31</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-01 16:32:45" itemprop="dateModified" datetime="2018-11-01T16:32:45+08:00">2018-11-01</time>
-              
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/实践总结/" rel="tag"># 实践总结</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>总会有些莫名其妙的感情，在不经意间流露。</p>
-<p>一晚上加一上午的单曲循环《你离开了南京，从此没有人和我说话》。这首简短且没有词的歌曲在今天似乎格外悠长。我也已经没有太多话去述说，就这样吧。。。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.kilenc.cc/2018/10/25/work-note-20181030/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The Ethan's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/25/work-note-20181030/" itemprop="url">
-                  工作杂记(1) 一次HTTP请求超时
-                </a>
-              
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
+              <a href="/2018/10/31/daily-note-20181031/" rel="next" title="日常吹水(1) 十月最后的一天">
+                <i class="fa fa-chevron-left"></i> 日常吹水(1) 十月最后的一天
+              </a>
             
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-25 16:17:03" itemprop="dateCreated datePublished" datetime="2018-10-25T16:17:03+08:00">2018-10-25</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-01 16:32:14" itemprop="dateModified" datetime="2018-11-01T16:32:14+08:00">2018-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>有两台服务器，一台上运行着PHP服务，另一台运行Java服务。两台服务器之间通过HTTP进行接口调用。查看Java服务端的日志发现，有很多往PHP服务的HTTP请求都超时。<br>于是在PHP服务器端用 <code>netstat</code> 命令查看了一下网络套接字连接情况。</p>
-<p>命令 <code>netstat -atp</code></p>
-<p>运行结果:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">tcp        0      0 172.19.126.49:53334     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:53556     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:52912     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50760     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:53534     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50570     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50080     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50660     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50708     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50156     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:51220     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:53924     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:49602     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:51988     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:38694     172.19.126.48:9981      TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:54832     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50184     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:49270     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:53124     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:54068     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:52530     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:50504     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:54822     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:52070     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:53562     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">tcp        0      0 172.19.126.49:54286     172.19.126.50:mysql     TIME_WAIT   -</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>发现大量的端口处于TIME_WAIT状态,而且都是与mysql连接相关.</p>
-<p>运行命令 <code>netstat -at | grep &#39;mysql&#39; | awk &#39;{print $6}&#39; | sort | uniq -c</code>。发现有差不多3000个端口处于TIME_WAIT。看来PHP服务打开的MySQL连接还真多。鉴于自己对PHP开发不了解，只是直觉上感觉打开这么多MySQL连接会影响服务性能。接下来主要想看一下HTTP调用的端口情况。用netstat检查发现端口连接不多，于是打算抓一下http端口的数据包看看。用tcpdump抓包，wireshark分析没有发现问题。然后又在Java服务端抓取双方通信的数据包，分析也没看出问题。It’s so strange!!!</p>
-<p>既然日志是Java服务报出来的，看来应该在Java服务上去找原因。查看了Java服务的代码，发现Java服务中使用了Vertx框架中的HttpClient来进行Http请求。HttpClient配置如下:</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"keepAlive"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"idleTimeout"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"maxPoolSize"</span>: <span class="number">50</span>,</span><br><span class="line">    <span class="attr">"maxWaitQueueSize"</span>: <span class="number">3000</span>,</span><br><span class="line">    <span class="attr">"connectTimeout"</span>: <span class="number">10000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当keepAlive设置为true的时候，HttpClient会重用建立的连接进行HTTP请求。idleTimeout参数控制连接空闲时间，当空闲时间达到idleTimout，该连接会被关闭。maxPoolSize指定了最大的连接数，当连接数没有达到maxPoolSize时，HttpClient会为新的请求新建连接，当达到maxPoolSize，HttpClient不再新建连接，而是把请求放进等待队列，等待队列的大小由maxWaitQueueSize来指定。connectTimeOut指定了连接超时时间。从日志看到的超时并不是连接超时。而是请求超时，请求超时是在HttpClientRequest里设置的。当一个请求达到设置的timeout且没有返回任何数据，就会一个<code>java.util.concurrent.TimeoutException</code>传递给异常处理方法。</p>
-<p>通过运行命令<code>netstat -at | grep -E &#39;172.19.126.49&#39; -c</code>发现当前连接已经达到了50，也就是达到了maxPoolSize的设置。</p>
-<p>统计Java服务发起的请求，1秒钟有差不多接近三千个请求。</p>
-<p>综合上述信息，问题还是出现在PHP服务，PHP服务提供的HTTP接口处理速度不够快，导致Java服务端产生大量的HTTP请求堆积超时。而且从PHP服务端一开始发现的大量MySQL连接也证实了PHP服务提供的接口实现会去直接访问数据库，没有采用缓存之类的操作，导致接口更慢。看来还得找PHP研发打架去。。。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -747,14 +452,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -775,8 +481,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -840,6 +555,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安全问题"><span class="nav-number">1.</span> <span class="nav-text">安全问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -970,6 +701,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
 
   
 
